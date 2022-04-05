@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Instructor table display</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="Instructor">
+<table class="Instructor Table">
+    <thead>
+      <tr>
+        <th>ID</th>
+		<th>name</th>
+		<th>dept_name</th>
+		<th>salary</th>
+      </tr>
+    </thead>
+    <tbody>
+	{% for inst in Instructors %}
+      <tr>
+        <td>{{inst.id}}</td>
+        <td>{{inst.name}}</td>
+		<td>{{inst.dept_name}}</td>
+		<td>{{inst.salary}}</td>
+      </tr>
+	  {% endfor %}
+	</tbody>
+</table>
+</div>
+</body>
+</html>

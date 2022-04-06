@@ -1,33 +1,19 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import loader
 import mysql.connector
 from django.views.decorators.csrf import csrf_exempt
-
+from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
 
-def home(request):
-
-    form = '<!DOCTYPE html>' + \
-           '<html>' + \
-           '<body>' + \
-           '<h3> Choose the any of the below: </h3>' + \
-           '<form action="admin/" method="post">' + \
-           '<input type="submit" value = "Admin"><br><br>' + \
-           '</form>' + \
-           '<form action="professor/" method="post">' + \
-           '<input type="submit" value = "Professor"><br><br>' + \
-           '</form>' + \
-           '<form action="student/" method="post">' + \
-           '<input type="submit" value = "Student">' + \
-           '</form>' + \
-           '</body>' + \
-           '</html>'
-
-    return HttpResponse(form)
-
+@login_required
 @csrf_exempt
 def admin(request):
+    if not (request.user.username == 'admin'):
+        return redirect('/login/?next=%s' % request.path)
 
     form = '<!DOCTYPE html>' + \
            '<html>' + \
@@ -52,13 +38,19 @@ def admin(request):
            '<input type-"text" id="semester_ip" name="semester_ip"><br><br>' + \
            '<input type="submit" value = "View professors">' + \
            '</form>' + \
+           '<p>Choose what to do.</p>' + \
+           '<p><a href="/">Home</a></p>' + \
+           '<p><a href="/accounts/login/">Log Out</a></p>' + \
            '</body>' + \
            '</html>'
 
     return HttpResponse(form)
 
+@login_required
 @csrf_exempt
 def f1(request):
+    if not (request.user.username == 'admin'):
+        return redirect('/login/?next=%s' % request.path)
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -94,8 +86,11 @@ def f1(request):
 
     return HttpResponse(data)
 
+@login_required
 @csrf_exempt
 def f2(request):
+    if not (request.user.username == 'admin'):
+        return redirect('/login/?next=%s' % request.path)
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -128,9 +123,11 @@ def f2(request):
 
     return HttpResponse(data)
 
+@login_required
 @csrf_exempt
 def f3(request):
-
+    if not (request.user.username == 'admin'):
+        return redirect('/login/?next=%s' % request.path)
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -175,7 +172,7 @@ def professor(request):
         '<html>' + \
         '<body>' + \
         '<h1>Professor:</h1>' + \
-        '<form action="courses/" method="post">' + \
+        '<form action="f4/" method="post">' + \
            '<p> F4. List of course sections and no. of students enrolled by semester: <p>' + \
            '<input type-"text" id="course_id" name="course_id">' + \
             '<label for="course_id"> Course ID</label><br>' + \
@@ -183,7 +180,7 @@ def professor(request):
             '<label for="sec_id"> Section</label><br>' + \
             '<input type="submit" value = "View courses">' + \
         '</form>' + \
-        '<form action="students/" method="post">' + \
+        '<form action="f5/" method="post">' + \
            '<p> F5. List of professors sorted by: <p>' + \
            '<input type-"text" id="instructor_name" name="instructor_name">' + \
            '<label for="course_id">Instructor name</label><br>' + \
@@ -193,6 +190,8 @@ def professor(request):
             '<label for="year"> Year</label><br>' + \
             '<input type="submit" value="Students">' + \
         '</form>' + \
+        '<p><a href="/">Home</a></p>' + \
+        '<p><a href="/accounts/login/">Log Out</a></p>' + \
         '</body>' + \
         '</html>'
 
@@ -200,7 +199,7 @@ def professor(request):
 
 
 @csrf_exempt
-def professorCourses(request):
+def f4(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -247,7 +246,7 @@ def professorCourses(request):
 
 
 @csrf_exempt
-def professorStudents(request):
+def f5(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -307,7 +306,7 @@ def student(request):
            '<html>' + \
            '<body>' + \
            '<h1>Student</h1>' + \
-           '<form action="studentCourses/" method="post">' + \
+           '<form action="f6/" method="post">' + \
            '<p> F6. List of course sections offered by department in a given semester and year: <p>' + \
            '<input type-"text" id="department" name="department">' + \
            '<label for="department"> Department</label><br>' + \
@@ -317,13 +316,15 @@ def student(request):
            '<label for="year"> Year</label><br>' + \
            '<input type="submit" value = "Submit">' + \
            '</form>' + \
+           '<p><a href="/">Home</a></p>' + \
+           '<p><a href="/accounts/login/">Log Out</a></p>' + \
            '</html>'
 
     return HttpResponse(form)
 
 
 @csrf_exempt
-def studentCourses(request):
+def f6(request):
 
     mydb = mysql.connector.connect(
         host="localhost",

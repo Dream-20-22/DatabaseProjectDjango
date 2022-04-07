@@ -5,6 +5,7 @@ The system will make use of the university database that you have been working o
 The system will utilize the Django web framework to connect to MySQL and to hold together all components: 
 loading data from database and dynamically creating a web page for displaying the data. The user interface will be built using Django templates.
 
+
 Your system will provide functionalities for three kinds of users: admin, prof, and students, as follows:
 
 Admin can do the following: 

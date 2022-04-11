@@ -19,3 +19,13 @@ F5. Create the list of students enrolled in a course section taught by the profe
 
 Students can do the following: 
 F6. Query the list of course sections offered by dept in a given semester and year.
+
+To run this code, you need following things to do:
+Install Python and mysql-connector-python
+Installing and using Django
+setup the connection
+Python IDE to execute and run the project(you can use pycharm)
+Change the password of mysql in settings.py and views.py
+run the command python manage.py runserver 
+or python3 manage.py runserver
+That's all

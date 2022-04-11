@@ -86,7 +86,7 @@ DATABASES = {
 
         'USER': 'root',
 
-        'PASSWORD': 'DurgaPratap@1', #Change the password accordingly
+        'PASSWORD': 'N@rah2021', #Change the password accordingly
 
         'HOST': 'localhost',
         

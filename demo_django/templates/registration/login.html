@@ -3,11 +3,33 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h2>Welcome!</h2>
-<h3>Please log in:</h3>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Log In</button>
-</form>
+
+<style>
+mark { background-color: #bdbdbd; color: black; }
+th, td { background-color: #e0e0e0; }
+.center { margin-left: auto; margin-right: auto; }
+h1, h2, h3, h4 { text-align: center; }
+</style>
+<br>
+<body style="background-color:#F4F6F6;">
+<br> <br> <br> <br> <br>
+<table style="width:80%" class="center">
+  <tr>
+    <td colspan="4"><h1> EE568/CS560 Database Systems | Spring 2022 </h1>
+                    <h2> Final Course Project: Database-Backed Web Application </h2>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4"><h2> Welcome, <ins>guest</ins>! Please, you need to login as:  </h2>
+                 <h3>Authorized Users: <mark>admin</mark>, <mark>professor</mark>, or <mark>student</mark>.</h3>
+      <form style="text-align: center;" method="post" >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" value="login">Log In</button> 
+        <input type="button" value="Cancel" onclick="window.location.href='{% url 'logout' %}'"> 
+      </form> 
+    </td>
+  </tr>
+ </table>
+ 
 {% endblock %}

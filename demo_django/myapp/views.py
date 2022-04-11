@@ -17,30 +17,57 @@ def admin(request):
 
     form = '<!DOCTYPE html>' + \
            '<html>' + \
+            '<style>' + \
+                'th, td { background-color: #e0e0e0; }' + \
+                '.center { margin-left: auto; margin-right: auto; }' + \
+                'h1, h2, h3, h4 { text-align: center; }' + \
+            '</style>' + \
            '<body>' + \
-           '<h1>Administrator:</h1>' + \
-           '<h3> Choose the following Functions to perform: </h3>' + \
-           '<form action="f1/" method="post">' + \
-           '<p> F1. List of professors sorted by: <p>' + \
-           '<INPUT TYPE=radio NAME="sort_method" VALUE="name" > Name</LABEL><BR>' + \
-           '<INPUT TYPE=radio NAME="sort_method" VALUE="dept_name"> Department</LABEL><BR>' + \
-           '<INPUT TYPE=radio NAME="sort_method" VALUE="salary"> Salary</LABEL>' + \
-           '<p>        </p>' + \
-           '<input type="submit" value = "List of professors sorted">' + \
-           '</form>' + \
-           '<form action="f2/" method="post">' + \
-           '<p> F2. Table of min/max/average salaries by department: <p>' + \
-           '<input type-"text" id="dept_name" name="dept_name"><br><br>' + \
-           '<input type="submit" value = "View salaries of instructors">' + \
-           '</form>' + \
-           '<form action="f3/" method="post">' + \
-           '<p> F3. Table of professor name, dept, and total number of students taught by the professor in a given semester <p>' + \
-           '<input type-"text" id="semester_ip" name="semester_ip"><br><br>' + \
-           '<input type="submit" value = "View professors">' + \
-           '</form>' + \
-           '<p>Choose what to do.</p>' + \
-           '<p><a href="/">Home</a></p>' + \
-           '<p><a href="/accounts/login/">Log Out</a></p>' + \
+               '<table style="width:80%" class="center">' + \
+                   '<tr>' + \
+                       '<td>' + \
+                           '<h1> &#9686; Administrator Panel &#9687;</h1>' + \
+                           '<h2> &#9873; You can perform these functions: </h2>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                  '<tr>' + \
+                       '<td>' + \
+                            '<form action="f1/" method="post" style="width:80%" class="center">' + \
+                            '<p> F1. List of professors sorted by: <p>' + \
+                            '<INPUT TYPE=radio NAME="sort_method" VALUE="name" > Name</LABEL><BR>' + \
+                            '<INPUT TYPE=radio NAME="sort_method" VALUE="dept"> Department</LABEL><BR>' + \
+                            '<INPUT TYPE=radio NAME="sort_method" VALUE="salary"> Salary</LABEL><br><br>' + \
+                            '<input type="submit" value = "submit">' + \
+                            '</form>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                  '<tr>' + \
+                       '<td>' + \
+                            '<form action="f2/" method="post" style="width:80%" class="center">' + \
+                            '<p> F2. Table of min/max/average salaries by department: <p>' + \
+                                '<input type-"text" id="dept_name" name="dept_name">' + \
+                                    '<label for="dept_name"> Department</label><br><br>' + \
+                                '<input type="submit" value = "submit">' + \
+                            '</form>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                  '<tr>' + \
+                       '<td>' + \
+                            '<form action="f3/" method="post" style="width:80%" class="center">' + \
+                            '<p> F3. Table of professor name, department, and total number of students taught by the professor in a given semester: <p>' + \
+                                '<input type-"text" id="semester_ip" name="semester_ip">' + \
+                                    '<label for="semester_ip"> Semester [<b>1</b> for Fall, <b>2</b> for Spring]</label><br><br>' + \
+                                '<input type="submit" value = "submit">' + \
+                            '</form>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                  '<tr>' + \
+                       '<td>' + \
+                            '<h3><a href="/">&#9668;Home&#9658;</a></h3>' + \
+                            '<h4><a href="/accounts/login/">&#10094;Log Out&#10095;</a></h4>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                '</table>' + \
            '</body>' + \
            '</html>'
 
@@ -54,7 +81,7 @@ def f1(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="DurgaPratap@1",
+        passwd="N@rah2021", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -67,19 +94,28 @@ def f1(request):
     query += ";"
     mycursor.execute(query)
 
-    data = '<h1>Sorted results :</h1>'
-    data += '<table style="width:400px">'
-    data += '<tr><th>ID</th> <th>Name</th> <th>dept_name</th> <th>Salary</th> </tr>'
-    for (ID, name, dept_name, salary) in mycursor:
+    data = '<br>'
+    data += '<h1>&#10070 Resulted List of Professors Sorted By <i>Name</i>, <i>Department</i>, or <i>Salary</i>:</h1>'
+    data += '<html>'
+    data +='<style>' 
+    data += 'th, td {border: 1px solid black;}' 
+    data += 'th, td { background-color: #e0e0e0; }'
+    data += 'h1, h2, h3, h4 { text-align: center; }'
+    data += '.center { margin-left: auto; margin-right: auto;}'
+    data += '</style>'
+    data += '<body style="background-color:#F4F6F6">'
+    data += '<table style="width:1250px" class="center">'
+    data += '<tr><th><big>Professor ID</big></th><th><big>Professor Name</big></th><th><big>Department</big></th><th><big>Salary</big></th></tr>'
+    for (ID, name, dept, salary) in mycursor:
         r = ('<tr>' + \
              '<th>' + str(ID) + '</th>' + \
              '<th>' + str(name) + '</th>' + \
-             '<th>' + str(dept_name) + '</th>' + \
+             '<th>' + str(dept) + '</th>' + \
              '<th>' + str(salary) + '</th>' + \
              '</t>')
         data += r
     data += '</table>'
-    data += '<a href="/admin/">Back</a>'
+    data += '<h3><a href="/admin/"><b>&#9668;Back&#9658;</b></a></h3>'
 
     mycursor.close()
     mydb.close()
@@ -94,7 +130,7 @@ def f2(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="DurgaPratap@1",
+        passwd="N@rah2021", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -102,13 +138,22 @@ def f2(request):
     dept = request.POST['dept_name']
     query = "select MAX(salary), MIN(salary), AVG(salary)" + \
             " from instructor " + \
-            "where instructor.dept_name = \"" + dept + "\";"
+            "where instructor.dept = \"" + dept + "\";"
     mycursor.execute(query)
 
-    data = '<h1>Results:</h1>'
-    data += '<table style="width:400px">'
-    data += '<tr><th>Max</th> <th>Min</th> <th>Average</th></tr>'
-    for (max, min, avg) in mycursor:
+    data = '<br>'
+    data += '<h1>&#10070 Resulted Table of <i>Min</i>/<i>Max</i>/<i>Average</i> <i>Salaries</i> By <i>Department</i>:</h1>'
+    data += '<html>'
+    data +='<style>' 
+    data += 'th, td {border: 1px solid black;}' 
+    data += 'th, td { background-color: #e0e0e0; }'
+    data += 'h1, h2, h3, h4 { text-align: center; }'
+    data += '.center { margin-left: auto; margin-right: auto;}'
+    data += '</style>'
+    data += '<body style="background-color:#F4F6F6">'
+    data += '<table style="width:1250px" class="center">'
+    data += '<tr><th><big>Min Salary</big></th><th><big>Max Salary</big></th><th><big>Average Salary</big></th></tr>'
+    for (min, max, avg) in mycursor:
         r = ('<tr>' + \
              '<th>' + str(max) + '</th>' + \
              '<th>' + str(min) + '</th>' + \
@@ -116,7 +161,7 @@ def f2(request):
              '</t>')
         data += r
     data += '</table>'
-    data += '<a href="/admin/">Back</a>'
+    data += '<h3><a href="/admin/"><b>&#9668;Back&#9658;</b></a></h3>'
 
     mycursor.close()
     mydb.close()
@@ -131,7 +176,7 @@ def f3(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="DurgaPratap@1",
+        passwd="N@rah2021", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -139,7 +184,7 @@ def f3(request):
     mycursor = mydb.cursor()
 
     semester = request.POST['semester_ip']
-    query = "select I.name, I.dept_name, COUNT(S.name) "
+    query = "select I.name, I.dept, COUNT(S.name) "
     query += "from instructor I, student S, teaches TC, takes TK "
     query += "where I.ID = TC.id AND TC.course_id = TK.course_id AND TK.id = S.ID "
     if semester != "":
@@ -147,9 +192,18 @@ def f3(request):
         query += ";"
     mycursor.execute(query)
 
-    data = '<h1>Results:</h1>'
-    data += '<table style="width:400px">'
-    data += '<tr><th>Name</th> <th>Dept</th> <th>Number of Students</th> </tr>'
+    data = '<br>'
+    data += '<h1>&#10070 Resulted Table of <i>Professor Name</i>, <i>Department</i>, and <i>Number of Students</i>:</h1>'
+    data += '<html>'
+    data +='<style>' 
+    data += 'th, td {border: 1px solid black;}' 
+    data += 'th, td { background-color: #e0e0e0; }'
+    data += 'h1, h2, h3, h4 { text-align: center; }'
+    data += '.center { margin-left: auto; margin-right: auto;}'
+    data += '</style>'
+    data += '<body style="background-color:#F4F6F6">'
+    data += '<table style="width:1250px" class="center">'
+    data += '<tr><th><big>Professor Name</big></th> <th><big>Department</big></th> <th><big>Number of Students</big></th> </tr>'
     for (name, dept, count) in mycursor:
         r = ('<tr>' + \
              '<th>' + str(name) + '</th>' + \
@@ -158,7 +212,7 @@ def f3(request):
              '</t>')
         data += r
     data += '</table>'
-    data += '<a href="/admin/">Back</a>'
+    data += '<h3><a href="/admin/"><b>&#9668;Back&#9658;</b></a></h3>'
 
     mycursor.close()
     mydb.close()
@@ -169,31 +223,55 @@ def f3(request):
 def professor(request):
 
     form = '<!DOCTYPE html>' + \
-        '<html>' + \
-        '<body>' + \
-        '<h1>Professor:</h1>' + \
-        '<form action="f4/" method="post">' + \
-           '<p> F4. List of course sections and no. of students enrolled by semester: <p>' + \
-           '<input type-"text" id="course_id" name="course_id">' + \
-            '<label for="course_id"> Course ID</label><br>' + \
-            '<input type-"text" id="sec_id" name="sec_id">' + \
-            '<label for="sec_id"> Section</label><br>' + \
-            '<input type="submit" value = "View courses">' + \
-        '</form>' + \
-        '<form action="f5/" method="post">' + \
-           '<p> F5. List of professors sorted by: <p>' + \
-           '<input type-"text" id="instructor_name" name="instructor_name">' + \
-           '<label for="course_id">Instructor name</label><br>' + \
-           '<input type-"text" id="semester" name="semester">' + \
-            '<label for="semester"> Semester [1 for fall, 2 for spring]</label><br>' + \
-            '<input type-"text" id="year" name="year">' + \
-            '<label for="year"> Year</label><br>' + \
-            '<input type="submit" value="Students">' + \
-        '</form>' + \
-        '<p><a href="/">Home</a></p>' + \
-        '<p><a href="/accounts/login/">Log Out</a></p>' + \
-        '</body>' + \
-        '</html>'
+           '<html>' + \
+            '<style>' + \
+                'th, td { background-color: #e0e0e0; }' + \
+                '.center { margin-left: auto; margin-right: auto; }' + \
+                'h1, h2, h3, h4 { text-align: center; }' + \
+            '</style>' + \
+          '<body>' + \
+               '<table style="width:80%" class="center">' + \
+                   '<tr>' + \
+                       '<td>' + \
+                           '<h1> &#9686; Professor Panel &#9687;</h1>' + \
+                           '<h2> &#9873; You can perform these functions: </h2>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                    '<tr>' + \
+                       '<td>' + \
+                            '<form action="f4/" method="post" style="width:80%" class="center">' + \
+                            '<p> F4. List of course sections and the number of students enrolled in each section that a professor taught in a given semester: <p>' + \
+                            '<input type-"text" id="course_id" name="course_id">' + \
+                                '<label for="course_id"> Course ID</label><br>' + \
+                                '<input type-"text" id="sec_id" name="sec_id">' + \
+                                '<label for="sec_id"> Section ID</label><br><br>' + \
+                                '<input type="submit" value = "submit">' + \
+                            '</form>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                    '<tr>' + \
+                       '<td>' + \
+                            '<form action="f5/" method="post" style="width:80%" class="center">' + \
+                             '<p> F5. List of students enrolled in a course section taught by a professor in a given semester: <p>' + \
+                             '<input type-"text" id="instructor_name" name="instructor_name">' + \
+                                '<label for="course_id"> Professor Name</label><br>' + \
+                             '<input type-"text" id="semester" name="semester">' + \
+                                 '<label for="semester"> Semester [<b>1</b> for Fall, <b>2</b> for Spring]</label><br>' + \
+                            '<input type-"text" id="year" name="year">' + \
+                                 '<label for="year"> Year</label><br><br>' + \
+                            '<input type="submit" value="submit">' + \
+                            '</form>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                  '<tr>' + \
+                       '<td>' + \
+                            '<h3><a href="/">&#9668;Home&#9658;</a></h3>' + \
+                            '<h4><a href="/accounts/login/">&#10094;Log Out&#10095;</a></h4>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                '</table>' + \
+           '</body>' + \
+           '</html>'
 
     return HttpResponse(form)
 
@@ -203,7 +281,7 @@ def f4(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="DurgaPratap@1",
+        passwd="N@rah2021", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -226,9 +304,18 @@ def f4(request):
     query += " group by course_id, section;"
     mycursor.execute(query)
 
-    data = '<h1>Courses:</h1>'
-    data += '<table style="width:800px">'
-    data += '<tr><th>Course ID</th> <th>Section ID</th> <th>Number of Students</th></tr>'
+    data = '<br>' 
+    data += '<h1>&#10070 Resulted List of <i>Course Sections</i> and <i>Number of Students</i> Enrolled in <i>Each Section</i>:</h1>'
+    data += '<html>'
+    data +='<style>' 
+    data += 'th, td {border: 1px solid black;}' 
+    data += 'th, td { background-color: #e0e0e0; }'
+    data += 'h1, h2, h3, h4 { text-align: center; }'
+    data += '.center { margin-left: auto; margin-right: auto;}'
+    data += '</style>'
+    data += '<body style="background-color:#F4F6F6">'
+    data += '<table style="width:1250px" class="center">'
+    data += '<tr><th><big>Course ID</big></th><th><big>Section ID</big></th><th><big>Number of Students</big></th></tr>'
     for (course_id, sec_id, count) in mycursor:
         r = ('<tr>' +
              '<th>' + str(course_id) + '</th>' +
@@ -237,7 +324,8 @@ def f4(request):
              '</t>')
         data += r
     data += '</table>'
-    data += '<a href="/professor/">Back</a>'
+    data += '<h3><a href="/professor/"><b>&#9668;Back&#9658;</b></a></h3>'
+
 
     mycursor.close()
     mydb.close()
@@ -250,7 +338,7 @@ def f5(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="DurgaPratap@1",
+        passwd="N@rah2021", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -276,10 +364,19 @@ def f5(request):
     query += ";"
     mycursor.execute(query)
 
-    data = '<h1>Students:</h1>'
-    data += '<table style="width:800px">'
-    data += '<tr><th>Course ID</th> <th>Section ID</th> <th>Student Name</th>' + \
-            '<th>Semester</th> <th>Year</th> <th>Instructor ID</th> <th>Instructor</th></tr>'
+    data = '<br>' 
+    data += '<h1>&#10070 Resulted List of <i>Students</i> in A <i>Course Section</i> Taught By A <i>Professor</i> in A Given <i>Semester</i>:</h1>'
+    data += '<html>'
+    data +='<style>' 
+    data += 'th, td {border: 1px solid black;}' 
+    data += 'th, td { background-color: #e0e0e0; }'
+    data += 'h1, h2, h3, h4 { text-align: center; }'
+    data += '.center { margin-left: auto; margin-right: auto;}'
+    data += '</style>'
+    data += '<body style="background-color:#F4F6F6">'
+    data += '<table style="width:1250px" class="center">'
+    data += '<tr><th><big>Course ID</big></th> <th><big>Section ID</big></th> <th><big>Student Name</big></th>' + \
+            '<th><big>Semester</big></th> <th><big>Year</big></th> <th><big>Professor ID</big></th> <th><big>Professor Name</big></th></tr>'
     for (course_id, sec_id, semester, year, name, teacher_id, instructor) in mycursor:
         r = ('<tr>' +
              '<th>' + str(course_id) + '</th>' +
@@ -292,7 +389,7 @@ def f5(request):
              '</t>')
         data += r
     data += '</table>'
-    data += '<a href="/professor/">Back</a>'
+    data += '<h3><a href="/professor/"><b>&#9668;Back&#9658;</b></a></h3>'
 
     mycursor.close()
     mydb.close()
@@ -304,20 +401,41 @@ def student(request):
 
     form = '<!DOCTYPE html>' + \
            '<html>' + \
-           '<body>' + \
-           '<h1>Student</h1>' + \
-           '<form action="f6/" method="post">' + \
-           '<p> F6. List of course sections offered by department in a given semester and year: <p>' + \
-           '<input type-"text" id="department" name="department">' + \
-           '<label for="department"> Department</label><br>' + \
-           '<input type-"text" id="semester" name="semester">' + \
-           '<label for="semester"> Semester [1 for fall, 2 for spring]</label><br>' + \
-           '<input type-"text" id="year" name="year">' + \
-           '<label for="year"> Year</label><br>' + \
-           '<input type="submit" value = "Submit">' + \
-           '</form>' + \
-           '<p><a href="/">Home</a></p>' + \
-           '<p><a href="/accounts/login/">Log Out</a></p>' + \
+            '<style>' + \
+                'th, td { background-color: #e0e0e0; }' + \
+                '.center { margin-left: auto; margin-right: auto; }' + \
+                'h1, h2, h3, h4 { text-align: center; }' + \
+            '</style>' + \
+          '<body>' + \
+               '<table style="width:80%" class="center">' + \
+                   '<tr>' + \
+                       '<td>' + \
+                           '<h1> &#9686; Student Panel &#9687;</h1>' + \
+                           '<h2> &#9873; You can perform these functions: </h2>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                    '<tr>' + \
+                        '<td>' + \
+                            '<form action="f6/" method="post" style="width:80%" class="center">' + \
+                                 '<p> F6. List of course sections offered by department in a given semester and year: <p>' + \
+                                '<input type-"text" id="department" name="department">' + \
+                                     '<label for="department"> Department</label><br>' + \
+                                '<input type-"text" id="semester" name="semester">' + \
+                                     '<label for="semester"> Semester [<b>1</b> for Fall, <b>2</b> for Spring]</label><br>' + \
+                                '<input type-"text" id="year" name="year">' + \
+                                    '<label for="year"> Year</label><br><br>' + \
+                                '<input type="submit" value = "Submit">' + \
+                            '</form>' + \
+                        '</td>' + \
+                    '</tr>' + \
+                  '<tr>' + \
+                       '<td>' + \
+                            '<h3><a href="/">&#9668;Home&#9658;</a></h3>' + \
+                            '<h4><a href="/accounts/login/">&#10094;Log Out&#10095;</a></h4>' + \
+                        '</td>' + \
+                   '</tr>' + \
+                '</table>' + \
+           '</body>' + \
            '</html>'
 
     return HttpResponse(form)
@@ -329,7 +447,7 @@ def f6(request):
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="DurgaPratap@1",
+        passwd="N@rah2021", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -350,11 +468,20 @@ def f6(request):
     query += ";"
     mycursor.execute(query)
 
-    data = '<h1>Courses:</h1>'
-    data += '<table style="width:800px">'
-    data += '<tr><th>Course ID</th> <th>Course Title</th>' + \
-            '<th>Department Name</th> <th>Section</th>' + \
-            '<th>Semester</th> <th>Year</th></tr>'
+    data = '<br>' 
+    data += '<h1>&#10070 Resulted List of <i>Course Sections</i> Offered By <i>Department</i> in A Given <i>Semester</i> and <i>Year</i>:</h1>'
+    data += '<html>'
+    data +='<style>' 
+    data += 'th, td {border: 1px solid black;}' 
+    data += 'th, td { background-color: #e0e0e0; }'
+    data += 'h1, h2, h3, h4 { text-align: center; }'
+    data += '.center { margin-left: auto; margin-right: auto;}'
+    data += '</style>'
+    data += '<body style="background-color:#F4F6F6">'
+    data += '<table style="width:1250px" class="center">'
+    data += '<tr><th><big>Course ID</big></th> <th><big>Course Name</big></th>' + \
+            '<th><big>Department</big></th> <th><big>Section</big></th>' + \
+            '<th><big>Semester</big></th> <th><big>Year</big></th></tr>'
     for (course_id, sec_id, title, dept_name, semester, year) in mycursor:
         r = ('<tr>' +
              '<th>' + str(course_id) + '</th>' +
@@ -366,7 +493,7 @@ def f6(request):
              '</t>')
         data += r
     data += '</table>'
-    data += '<a href="/student/">Back</a>'
+    data += '<h3><a href="/student/"><b>&#9668;Back&#9658;</b></a></h3>'
 
     mycursor.close()
     mydb.close()

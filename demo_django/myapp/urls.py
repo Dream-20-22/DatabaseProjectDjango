@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.views.generic.base import TemplateView
 from django.urls import path, include
 from . import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
 
@@ -22,3 +23,4 @@ urlpatterns = [
 ]
 
 
+urlpatterns += staticfiles_urlpatterns()

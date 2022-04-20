@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% block content %}
+<body style="background-color:#F4F6F6;">
+<br>
+<style>
+th, td { background-color: #e0e0e0; }
+.center { margin-left: auto; margin-right: auto; }
+h1, h2, h3, h4 { text-align: center; }
+</style>
+<br> <br> <br> <br> <br>
+<table style="width:80%" class="center">
+    <tr>
+        <td>
+            {% if user.is_authenticated %}
+              <h1> Welcome, <ins>{{ user.username }}</ins>! </h1>
+              {% if user.username == "student" %}
+                <h2>&#9873; You can access this panel:</h2>
+                <h3><a href="{% url 'student' %}">&#9668;Student&#9658;</a></h3>
+                <h4><a href="{% url 'login' %}">&#10094;Log Out&#10095;</a></h4>
+              {% elif user.username == "admin" %}
+                <h2>&#9873; You can access these panels:</h2>
+                <h3><a href="{% url 'admin' %}">&#9668;Administrator&#9658;</a></h3>
+                <h3><a href="{% url 'professor' %}">&#9668;Professor&#9658;</a></h3>
+                <h3><a href="{% url 'student' %}">&#9668;Student&#9658;</a></h3>
+                <h4><a href="{% url 'login' %}">&#10094;Log Out&#10095;</a></h4>
+              {% elif user.username == "professor" %}
+                <h2>&#9873; You can access this panel:</h2>
+                <h3><a href="{% url 'professor' %}">&#9668;Professor&#9658;</a></h3>
+                <h4><a href="{% url 'login' %}">&#10094;Log Out&#10095;</a></h4> 
+              {% endif %}
+        </td>
+    </tr>
+  </table>
+  <table>
+            {% else %}
+            <tr>
+              <td colspan="4"><h1> EE568/CS560 Database Systems | Spring 2022 </h1>
+                              <h2> Final Course Project: Database-Backed Web Application </h2>
+                              <h3> By: Irfan Yaqoob, Naveen Kumar, Norah Alshahrani, Numan Zafar </h3>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <h2> Welcome, <ins>guest</ins>! Please, you need to login.  </h2>
+                <h2> <a href="{% url 'login' %}">&#10094; Log In &#10095;</a></h2>  
+            {% endif %}
+              </td>
+            </tr>
+</table>
+</body>
+
+{% endblock %}

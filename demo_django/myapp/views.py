@@ -370,10 +370,6 @@ def f4(request):
 @csrf_exempt
 def f5(request):
 
-    if not (request.user.username == 'instructor'):
-        #return redirect('/login/?next=%s' % request.path)
-        print('please login')
-
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",

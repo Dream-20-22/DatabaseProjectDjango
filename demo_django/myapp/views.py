@@ -1,21 +1,14 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
+from django.http import HttpResponse
 import mysql.connector
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
 
 # Create your views here.
 
-@login_required
-@csrf_exempt
+@login_required(login_url='/accounts/login/')
 def admin(request):
-    if not (request.user.username == 'admin'):
-        return redirect('/login/?next=%s' % request.path)
-
-    form = '<!DOCTYPE html>' + \
+    if request.user.username == 'admin':
+        form = '<!DOCTYPE html>' + \
            '<html>' + \
             '<style>' + \
                 'th, td { background-color: #e0e0e0; }' + \
@@ -35,7 +28,7 @@ def admin(request):
                             '<form action="f1/" method="post" style="width:80%" class="center">' + \
                             '<p> F1. List of professors sorted by: <p>' + \
                             '<INPUT TYPE=radio NAME="sort_method" VALUE="name" > Name</LABEL><BR>' + \
-                            '<INPUT TYPE=radio NAME="sort_method" VALUE="dept"> Department</LABEL><BR>' + \
+                            '<INPUT TYPE=radio NAME="sort_method" VALUE="dept_name"> Department</LABEL><BR>' + \
                             '<INPUT TYPE=radio NAME="sort_method" VALUE="salary"> Salary</LABEL><br><br>' + \
                             '<input type="submit" value = "submit">' + \
                             '</form>' + \
@@ -71,17 +64,37 @@ def admin(request):
            '</body>' + \
            '</html>'
 
-    return HttpResponse(form)
+        return HttpResponse(form)
 
-@login_required
+    else:
+        form = '<!DOCTYPE html>' + \
+               '<html>' + \
+               '<style>' + \
+               'th, td { background-color: #e0e0e0; }' + \
+               '.center { margin-left: auto; margin-right: auto; }' + \
+               'h1, h2, h3, h4 { text-align: center; }' + \
+               '</style>' + \
+               '<body>' + \
+               '<table style="width:80%" class="center">' + \
+               '<tr>' + \
+               '<td>' + \
+               '<h1> &#9686; Please Login &#9687;</h1>' + \
+               '<h2><a href="/accounts/login/">&#10094;Log in&#10095;</a></h4>' + \
+               '</td>' + \
+               '</tr>' + \
+               '</table>' + \
+               '</body>' + \
+               '</html>'
+        return HttpResponse(form)
+
+@login_required(login_url='/accounts/login/')
 @csrf_exempt
 def f1(request):
-    if not (request.user.username == 'admin'):
-        return redirect('/login/?next=%s' % request.path)
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="N@rah2021", #Change the password accordingly
+        passwd="DurgaPratap@1", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -97,8 +110,8 @@ def f1(request):
     data = '<br>'
     data += '<h1>&#10070 Resulted List of Professors Sorted By <i>Name</i>, <i>Department</i>, or <i>Salary</i>:</h1>'
     data += '<html>'
-    data +='<style>' 
-    data += 'th, td {border: 1px solid black;}' 
+    data +='<style>'
+    data += 'th, td {border: 1px solid black;}'
     data += 'th, td { background-color: #e0e0e0; }'
     data += 'h1, h2, h3, h4 { text-align: center; }'
     data += '.center { margin-left: auto; margin-right: auto;}'
@@ -106,11 +119,11 @@ def f1(request):
     data += '<body style="background-color:#F4F6F6">'
     data += '<table style="width:1250px" class="center">'
     data += '<tr><th><big>Professor ID</big></th><th><big>Professor Name</big></th><th><big>Department</big></th><th><big>Salary</big></th></tr>'
-    for (ID, name, dept, salary) in mycursor:
+    for (ID, name, dept_name, salary) in mycursor:
         r = ('<tr>' + \
              '<th>' + str(ID) + '</th>' + \
              '<th>' + str(name) + '</th>' + \
-             '<th>' + str(dept) + '</th>' + \
+             '<th>' + str(dept_name) + '</th>' + \
              '<th>' + str(salary) + '</th>' + \
              '</t>')
         data += r
@@ -122,15 +135,14 @@ def f1(request):
 
     return HttpResponse(data)
 
-@login_required
+@login_required(login_url='/accounts/login/')
 @csrf_exempt
 def f2(request):
-    if not (request.user.username == 'admin'):
-        return redirect('/login/?next=%s' % request.path)
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="N@rah2021", #Change the password accordingly
+        passwd="DurgaPratap@1", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -138,14 +150,14 @@ def f2(request):
     dept = request.POST['dept_name']
     query = "select MAX(salary), MIN(salary), AVG(salary)" + \
             " from instructor " + \
-            "where instructor.dept = \"" + dept + "\";"
+            "where instructor.dept_name = \"" + dept + "\";"
     mycursor.execute(query)
 
     data = '<br>'
     data += '<h1>&#10070 Resulted Table of <i>Min</i>/<i>Max</i>/<i>Average</i> <i>Salaries</i> By <i>Department</i>:</h1>'
     data += '<html>'
-    data +='<style>' 
-    data += 'th, td {border: 1px solid black;}' 
+    data +='<style>'
+    data += 'th, td {border: 1px solid black;}'
     data += 'th, td { background-color: #e0e0e0; }'
     data += 'h1, h2, h3, h4 { text-align: center; }'
     data += '.center { margin-left: auto; margin-right: auto;}'
@@ -168,15 +180,14 @@ def f2(request):
 
     return HttpResponse(data)
 
-@login_required
+@login_required(login_url='/accounts/login/')
 @csrf_exempt
 def f3(request):
-    if not (request.user.username == 'admin'):
-        return redirect('/login/?next=%s' % request.path)
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="N@rah2021", #Change the password accordingly
+        passwd="DurgaPratap@1", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -184,19 +195,20 @@ def f3(request):
     mycursor = mydb.cursor()
 
     semester = request.POST['semester_ip']
-    query = "select I.name, I.dept, COUNT(S.name) "
+    query = "select I.name, I.dept_name, COUNT(S.name) as count "
     query += "from instructor I, student S, teaches TC, takes TK "
     query += "where I.ID = TC.id AND TC.course_id = TK.course_id AND TK.id = S.ID "
     if semester != "":
         query += "and TK.semester = " + semester
+        query += " group by I.ID"
         query += ";"
     mycursor.execute(query)
 
     data = '<br>'
     data += '<h1>&#10070 Resulted Table of <i>Professor Name</i>, <i>Department</i>, and <i>Number of Students</i>:</h1>'
     data += '<html>'
-    data +='<style>' 
-    data += 'th, td {border: 1px solid black;}' 
+    data +='<style>'
+    data += 'th, td {border: 1px solid black;}'
     data += 'th, td { background-color: #e0e0e0; }'
     data += 'h1, h2, h3, h4 { text-align: center; }'
     data += '.center { margin-left: auto; margin-right: auto;}'
@@ -204,10 +216,10 @@ def f3(request):
     data += '<body style="background-color:#F4F6F6">'
     data += '<table style="width:1250px" class="center">'
     data += '<tr><th><big>Professor Name</big></th> <th><big>Department</big></th> <th><big>Number of Students</big></th> </tr>'
-    for (name, dept, count) in mycursor:
+    for (name, dept_name, count) in mycursor:
         r = ('<tr>' + \
              '<th>' + str(name) + '</th>' + \
-             '<th>' + str(dept) + '</th>' + \
+             '<th>' + str(dept_name) + '</th>' + \
              '<th>' + str(count) + '</th>' + \
              '</t>')
         data += r
@@ -219,10 +231,10 @@ def f3(request):
 
     return HttpResponse(data)
 
-@csrf_exempt
+@login_required(login_url='/accounts/login/')
 def professor(request):
-
-    form = '<!DOCTYPE html>' + \
+    if request.user.username == 'instructor':
+        form = '<!DOCTYPE html>' + \
            '<html>' + \
             '<style>' + \
                 'th, td { background-color: #e0e0e0; }' + \
@@ -273,15 +285,37 @@ def professor(request):
            '</body>' + \
            '</html>'
 
-    return HttpResponse(form)
+        return HttpResponse(form)
 
+    else:
+        form = '<!DOCTYPE html>' + \
+               '<html>' + \
+               '<style>' + \
+               'th, td { background-color: #e0e0e0; }' + \
+               '.center { margin-left: auto; margin-right: auto; }' + \
+               'h1, h2, h3, h4 { text-align: center; }' + \
+               '</style>' + \
+               '<body>' + \
+               '<table style="width:80%" class="center">' + \
+               '<tr>' + \
+               '<td>' + \
+               '<h1> &#9686; Please Login &#9687;</h1>' + \
+               '<h2><a href="/accounts/login/">&#10094;Log in&#10095;</a></h4>' + \
+               '</td>' + \
+               '</tr>' + \
+               '</table>' + \
+               '</body>' + \
+               '</html>'
+        return HttpResponse(form)
 
+@login_required(login_url='/accounts/login/')
 @csrf_exempt
 def f4(request):
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="N@rah2021", #Change the password accordingly
+        passwd="DurgaPratap@1", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -304,11 +338,11 @@ def f4(request):
     query += " group by course_id, section;"
     mycursor.execute(query)
 
-    data = '<br>' 
+    data = '<br>'
     data += '<h1>&#10070 Resulted List of <i>Course Sections</i> and <i>Number of Students</i> Enrolled in <i>Each Section</i>:</h1>'
     data += '<html>'
-    data +='<style>' 
-    data += 'th, td {border: 1px solid black;}' 
+    data +='<style>'
+    data += 'th, td {border: 1px solid black;}'
     data += 'th, td { background-color: #e0e0e0; }'
     data += 'h1, h2, h3, h4 { text-align: center; }'
     data += '.center { margin-left: auto; margin-right: auto;}'
@@ -332,13 +366,18 @@ def f4(request):
 
     return HttpResponse(data)
 
-
+@login_required(login_url='/accounts/login/')
 @csrf_exempt
 def f5(request):
+
+    if not (request.user.username == 'instructor'):
+        #return redirect('/login/?next=%s' % request.path)
+        print('please login')
+
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="N@rah2021", #Change the password accordingly
+        passwd="DurgaPratap@1", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -364,11 +403,11 @@ def f5(request):
     query += ";"
     mycursor.execute(query)
 
-    data = '<br>' 
+    data = '<br>'
     data += '<h1>&#10070 Resulted List of <i>Students</i> in A <i>Course Section</i> Taught By A <i>Professor</i> in A Given <i>Semester</i>:</h1>'
     data += '<html>'
-    data +='<style>' 
-    data += 'th, td {border: 1px solid black;}' 
+    data +='<style>'
+    data += 'th, td {border: 1px solid black;}'
     data += 'th, td { background-color: #e0e0e0; }'
     data += 'h1, h2, h3, h4 { text-align: center; }'
     data += '.center { margin-left: auto; margin-right: auto;}'
@@ -396,10 +435,10 @@ def f5(request):
 
     return HttpResponse(data)
 
-@csrf_exempt
+@login_required(login_url='/accounts/login/')
 def student(request):
-
-    form = '<!DOCTYPE html>' + \
+    if request.user.username == 'student':
+        form = '<!DOCTYPE html>' + \
            '<html>' + \
             '<style>' + \
                 'th, td { background-color: #e0e0e0; }' + \
@@ -438,16 +477,37 @@ def student(request):
            '</body>' + \
            '</html>'
 
-    return HttpResponse(form)
+        return HttpResponse(form)
 
+    else:
+        form = '<!DOCTYPE html>' + \
+               '<html>' + \
+               '<style>' + \
+               'th, td { background-color: #e0e0e0; }' + \
+               '.center { margin-left: auto; margin-right: auto; }' + \
+               'h1, h2, h3, h4 { text-align: center; }' + \
+               '</style>' + \
+               '<body>' + \
+               '<table style="width:80%" class="center">' + \
+               '<tr>' + \
+               '<td>' + \
+               '<h1> &#9686; Please Login &#9687;</h1>' + \
+               '<h2><a href="/accounts/login/">&#10094;Log in&#10095;</a></h4>' + \
+               '</td>' + \
+               '</tr>' + \
+               '</table>' + \
+               '</body>' + \
+               '</html>'
+        return HttpResponse(form)
 
+@login_required(login_url='/accounts/login/')
 @csrf_exempt
 def f6(request):
 
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="N@rah2021", #Change the password accordingly
+        passwd="DurgaPratap@1", #Change the password accordingly
         auth_plugin="mysql_native_password",
         database="university",
     )
@@ -468,11 +528,11 @@ def f6(request):
     query += ";"
     mycursor.execute(query)
 
-    data = '<br>' 
+    data = '<br>'
     data += '<h1>&#10070 Resulted List of <i>Course Sections</i> Offered By <i>Department</i> in A Given <i>Semester</i> and <i>Year</i>:</h1>'
     data += '<html>'
-    data +='<style>' 
-    data += 'th, td {border: 1px solid black;}' 
+    data +='<style>'
+    data += 'th, td {border: 1px solid black;}'
     data += 'th, td { background-color: #e0e0e0; }'
     data += 'h1, h2, h3, h4 { text-align: center; }'
     data += '.center { margin-left: auto; margin-right: auto;}'
@@ -499,3 +559,4 @@ def f6(request):
     mydb.close()
 
     return HttpResponse(data)
+
